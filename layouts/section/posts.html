@@ -4,24 +4,29 @@
     Posts
   </h1>
   <div>
-     <!-- Group all the post pages from the same year -->
-      {{ $pages := where site.RegularPages "Type" "in" site.Params.mainSections }}
-      {{ range ($pages.GroupByDate "2006") }}
-          <h3>{{ .Key }}</h3> <!-- Display the year -->
+        <!-- Range over the pages and only include the ones that are a post type -->
+        {{ $pages := where site.RegularPages "Type" "in" site.Params.mainSections }}
+        {{ range (.Paginate $pages).Pages }}
+        <article>
+            <h2>
+                <a href="{{ .Permalink }}">
+                    {{ .Title }}
+                </a>
+            </h2>
+            <div><p>{{ .Summary }}</p></div>
+            <div class="post-footer">
+            <time>{{ .Date.Format "January 2, 2006" }}</time>
 
-          <ul class="archives-list"> 
-            
-              {{ range (.Pages) }}
-             
-                  <li class="archives-list-item">
-                    <span class="archives-list-item-date">{{ .PublishDate.Format "Jan 2" }}</span>
-                    <span>
-                      <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-                    </span>
-                  </li>
-              {{ end }}
-          </ul>
-      {{ end }}
+            <!-- Display tags -->
+            {{if .Params.tags}}
+                {{ range .Params.tags }}
+                    <a class="tag" href="/tags/{{ . | urlize }}">#{{.}}</a>
+                {{ end }}
+            {{ end }}
+            </div> 
+           
+        </article>
+        {{ end }}
   </div>
 
   <div class="page-footer"></div>
